@@ -1,0 +1,20 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        // in CommonJS
+        "node": true,
+        // browser
+        "browser": true,
+        // mocha
+        "mocha": true
+    },
+    "globals": {},
+    "rules": {
+        "semi": [ 2, "never" ],
+        "quotes": [ 2, "single", "avoid-escape" ],
+        "no-unused-vars": [ 2, {"vars": "all", "args": "none"} ],
+        "eqeqeq": [ 2, "smart" ],
+        "key-spacing": [ 2, { "beforeColon": false, "afterColon": true } ]
+//        ,"object-curly-spacing": [ 2, "always" ]
+    }
+}

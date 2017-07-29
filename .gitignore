@@ -1,0 +1,16 @@
+node_modules
+xunit.xml
+debug
+.sass-cache
+npm-debug.log
+.DS_Store
+test_results
+coverage
+/build
+*.backup
+.scratch
+.idea
+*.swp
+/tmp
+/log
+yarn.lock
