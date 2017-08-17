@@ -18,6 +18,7 @@
     "name": "Francesco Sullo",
     "email": "francesco@sullo.co"
   },
+  "inspiredBy": "https://github.com/SBoudrias/Inquirer.js/issues/306#issuecomment-252516909 by Allen Kim (https://github.com/allenhwkim)",
   "bugs": {
     "url": "https://github.com/sullof/inquirer-command-prompt/issues"
   },

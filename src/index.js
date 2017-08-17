@@ -1,8 +1,3 @@
-// (c) 2017 Francesco Sullo, francesco@sullo.co
-
-// inspired by Allen Kim (https://github.com/allenhwkim)
-// https://github.com/SBoudrias/Inquirer.js/issues/306#issuecomment-252516909
-
 const util = require('util')
 const chalk = require('chalk')
 const ellipsize = require('ellipsize')
