@@ -58,6 +58,7 @@ The titles of the songs are actually hints, and are not necessary for the comman
   'edit 36: Like a virgin'
 ]
 ```
+In a future version, I will add a generic `filter` option that can be executed if set.
 
 ##### context
 
