@@ -12,7 +12,9 @@ npm install inquirer-command-prompt --save
 ```javascript
 inquirer.registerPrompt('command', require('inquirer-command-prompt'))
 ```
-You can change the command with whatever you like, the prompt is anonymous.
+You can change the type `command` with whatever you like, the prompt is anonymous.
+
+## Example
 
 
 ```javascript
@@ -41,14 +43,14 @@ You can change the command with whatever you like, the prompt is anonymous.
 
 ##### autocompletion
 
-It can be an array or a function which returns an array allowing to generate the list of the commands dynamically. The function will accept a `line` parameter, which is the part of the command that's been already typed. That can be useful to determinate what to return. 
+It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed. 
 
-The first element of the list, in any case, can be an `options` object. Right now, the only implemented option is `separator` which allows to show in the list of the available commands a string, taking only the part of the string before the separator. For example, suppose that you want to edit something and the available commands are 
+The first element of the array can be an `options` object. Right now, the only implemented option is `separator` which allows to show the list of the available commands, taking only the part of a command before the separator. For example, suppose that you want to edit something and the available commands are 
 ```
 edit 12: Love is in the air
 edit 36: Like a virgin
 ```
-The title of the songs are actually hints, and are not necessary for the command which is only `edit 12`. To obtain this, you can pass the following command list:
+The titles of the songs are actually hints, and are not necessary for the command which is supposed to be only `edit 12`. So, you want that when the user presses TAB only `edit 12` is rendered. To obtain this, you can pass the following command list:
 ```
 [
   { separator: ':' }, 
