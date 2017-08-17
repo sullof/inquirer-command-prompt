@@ -2,11 +2,6 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-// (c) 2017 Francesco Sullo, francesco@sullo.co
-
-// inspired by Allen Kim (https://github.com/allenhwkim)
-// https://github.com/SBoudrias/Inquirer.js/issues/306#issuecomment-252516909
-
 var util = require('util');
 var chalk = require('chalk');
 var ellipsize = require('ellipsize');
@@ -32,9 +27,15 @@ function autoCompleter(line, cmds) {
   }
 
   // first element in cmds can be an object with special instructions
-  var options = {};
+  var options = {
+    filter: function filter(str) {
+      return str;
+    }
+  };
   if (_typeof(cmds[0]) === 'object') {
-    options = cmds[0];
+    if (typeof cmds[0].filter === 'function') {
+      options.filter = cmds[0].filter;
+    }
     cmds.slice(1);
   }
 
@@ -81,19 +82,15 @@ function autoCompleter(line, cmds) {
       commonStr += c;
     }
     if (commonStr) {
-      return { match: line + stripCommand(commonStr, options.separator) };
+      return { match: options.filter(line + commonStr) };
     } else {
       return { matches: cmds };
     }
   } else if (cmds.length === 1) {
-    return { match: stripCommand(cmds[0], options.separator) };
+    return { match: options.filter(cmds[0]) };
   } else {
-    return { match: stripCommand(line, options.separator) };
+    return { match: options.filter(line) };
   }
-}
-
-function stripCommand(line, separator) {
-  return separator ? line.split(separator)[0] : line;
 }
 
 CommandPrompt.prototype.onKeypress = function (e) {

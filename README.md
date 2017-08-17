@@ -45,7 +45,7 @@ You can change the type `command` with whatever you like, the prompt is anonymou
 
 It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed. 
 
-The first element of the array can be an `options` object. Right now, the only implemented option is `separator` which allows to show the list of the available commands, taking only the part of a command before the separator. For example, suppose that you want to edit something and the available commands are 
+The first element of the array can be an `options` object. Right now, the only implemented option is `filter`. Suppose that you want to edit something and the available commands are 
 ```
 edit 12: Love is in the air
 edit 36: Like a virgin
@@ -53,12 +53,11 @@ edit 36: Like a virgin
 The titles of the songs are actually hints, and are not necessary for the command which is supposed to be only `edit 12`. So, you want that when the user presses TAB only `edit 12` is rendered. To obtain this, you can pass the following command list:
 ```
 [
-  { separator: ':' }, 
+  { filter: str => str.split(':')[0] }, 
   'edit 12: Love is in the air',
   'edit 36: Like a virgin'
 ]
 ```
-In a future version, I will add a generic `filter` option that can be executed if set.
 
 ##### context
 

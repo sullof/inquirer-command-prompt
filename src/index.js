@@ -23,9 +23,14 @@ function autoCompleter(line, cmds) {
   }
 
   // first element in cmds can be an object with special instructions
-  let options = {}
+  let options = {
+    filter: str => str
+  }
   if (typeof cmds[0] === 'object') {
-    options = cmds[0]
+    const f = cmds[0].filter
+    if (typeof f === 'function') {
+      options.filter = f
+    }
     cmds.slice(1)
   }
 
@@ -50,19 +55,15 @@ function autoCompleter(line, cmds) {
       commonStr += c
     }
     if (commonStr) {
-      return {match: line + stripCommand(commonStr, options.separator)}
+      return {match: options.filter(line + commonStr)}
     } else {
       return {matches: cmds}
     }
   } else if (cmds.length === 1) {
-    return {match: stripCommand(cmds[0], options.separator)}
+    return {match: options.filter(cmds[0])}
   } else {
-    return {match: stripCommand(line, options.separator)}
+    return {match: options.filter(line)}
   }
-}
-
-function stripCommand(line, separator) {
-  return separator ? line.split(separator)[0] : line
 }
 
 
