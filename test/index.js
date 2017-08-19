@@ -1,56 +1,87 @@
-
 /* globals Promise */
 
 /* eslint-disable no-unused-vars */
 
 var assert = require('assert')
-var sinon = require('sinon')
 var ReadlineStub = require('./helpers/readline')
 var Prompt = require('../src/index')
 
-describe('inquirer-command-prompt', function() {
+describe('inquirer-command-prompt', function () {
 
-  var source
   var prompt
-  // var resolve
-  // var reject
-  var promise
   var rl
   var availableCommands
   var promiseForAnswer
 
-  describe('autocomplete', function() {
+  describe('auto-complete', function () {
 
-    beforeEach(function() {
+    beforeEach(function () {
       availableCommands = ['foo', 'bar', 'bum']
-      // promise = new Promise(function(res, rej) {
-      //   resolve = res
-      //   reject = rej
-      // })
-      source = sinon.stub().returns(promise)
       rl = new ReadlineStub()
     })
 
-    it('returns expected word if partially typed', function() {
+    it('should returns the expected word if that is partially typed', function () {
       prompt = new Prompt({
-        message: 'test',
+        message: '>',
         name: 'name',
         autoCompletion: availableCommands,
-        context: 0,
-        source: source
+        context: 0
       }, rl)
 
-      promiseForAnswer = prompt.run()
+      promiseForAnswer = getPromiseForAnswer()
 
       type('f')
       tab()
       enter()
 
-      return promiseForAnswer.then(function(answer) {
-        console.log(typeof answer, '>>',answer,'<<')
-        assert(answer === 'foo')
+      return promiseForAnswer.then(function () {
+        assert(rl.line === 'foo')
       })
     })
+
+    it('should returns the type word if tab not pressed', function () {
+      prompt = new Prompt({
+        message: '>',
+        name: 'name',
+        // autoCompletion: availableCommands,
+        context: 0
+      }, rl)
+
+      promiseForAnswer = getPromiseForAnswer()
+
+      type('hello')
+      enter()
+
+      return promiseForAnswer.then(function (answer) {
+        assert(rl.line === 'hello')
+      })
+    })
+
+    it('should returns the type word if tab pressed but no matches', function () {
+      prompt = new Prompt({
+        message: '>',
+        name: 'name',
+        // autoCompletion: availableCommands,
+        context: 0
+      }, rl)
+
+      promiseForAnswer = getPromiseForAnswer()
+
+      type('zu')
+      tab()
+      enter()
+
+      return promiseForAnswer.then(function (answer) {
+        assert(rl.line === 'zu')
+      })
+    })
+
+  })
+
+
+  describe('history', function () {
+
+    // to be done
 
   })
 
@@ -65,7 +96,7 @@ describe('inquirer-command-prompt', function() {
   }
 
   function type(word) {
-    word.split('').forEach(function(char) {
+    word.split('').forEach(function (char) {
       rl.line = rl.line + char
       rl.input.emit('keypress', char)
     })

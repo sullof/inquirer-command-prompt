@@ -5,9 +5,7 @@
   "scripts": {
     "lint": "eslint -c .eslintrc 'src/*.js' 'test/*.js'",
     "build": "babel ./src/index.js --out-file ./build/index.js",
-    "pretest": "npm run-script lint",
-    "test": "istanbul cover ./node_modules/.bin/_mocha test",
-    "posttest": "istanbul check-coverage --statements 85 --branches 85 --functions 85 --lines 85"
+    "test": "mocha test"
   },
   "description": "A command prompt with history and autocomplete.",
   "main": "index.js",
@@ -25,9 +23,11 @@
   },
   "homepage": "https://github.com/sullof/inquirer-command-prompt#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "chalk": "^1.1.3",
     "ellipsize": "0.0.3",
-    "inquirer": "^1.1.0"
+    "inquirer": "^1.1.0",
+    "preferences": "^0.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
