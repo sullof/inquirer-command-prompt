@@ -126,6 +126,8 @@ CommandPrompt.prototype.onKeypress = function (e) {
 CommandPrompt.prototype.run = function () {
   return new Promise(function (resolve) {
     this._run(function (value) {
+      if (typeof histories[context] === 'undefined') histories[context] = []
+      if (typeof historyIndexes[context] === 'undefined') historyIndexes[context] = 0
       histories[context].push(value)
       historyIndexes[context]++
       resolve(value)
