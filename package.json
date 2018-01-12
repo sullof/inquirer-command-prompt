@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/sullof/inquirer-command-prompt#readme",
   "dependencies": {
-    "chalk": "^1.1.3",
+    "chalk": "^2.3.0",
     "ellipsize": "0.0.3",
-    "inquirer": "^1.1.0"
+    "inquirer": "^5.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
