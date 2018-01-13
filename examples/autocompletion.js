@@ -1,7 +1,7 @@
 'use strict'
 
 var inquirer = require('inquirer')
-inquirer.registerPrompt('command', require('../index'))
+inquirer.registerPrompt('command', require('..'))
 
 
 function runPrompt() {
