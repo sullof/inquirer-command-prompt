@@ -4,7 +4,7 @@
 
 var assert = require('assert')
 var ReadlineStub = require('./helpers/readline')
-var Prompt = require('../src/index')
+var Prompt = require('..')
 
 describe('inquirer-command-prompt', function () {
 
