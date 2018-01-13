@@ -43,7 +43,7 @@ You can change the type `command` with whatever you like, the prompt is anonymou
 
 ##### autocompletion
 
-It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed. 
+It is optional. It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed. 
 
 The first element of the array can be an `options` object. Right now, the only implemented option is `filter`. Suppose that you want to edit something and the available commands are 
 ```

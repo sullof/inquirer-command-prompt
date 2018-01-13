@@ -21,6 +21,7 @@ function CommandPrompt() {
 util.inherits(CommandPrompt, InputPrompt);
 
 function autoCompleter(line, cmds) {
+
   var max = 0;
   if (typeof cmds === 'function') {
     cmds = cmds(line);
@@ -33,10 +34,11 @@ function autoCompleter(line, cmds) {
     }
   };
   if (_typeof(cmds[0]) === 'object') {
-    if (typeof cmds[0].filter === 'function') {
-      options.filter = cmds[0].filter;
+    var f = cmds[0].filter;
+    if (typeof f === 'function') {
+      options.filter = f;
     }
-    cmds.slice(1);
+    cmds = cmds.slice(1);
   }
 
   cmds = cmds.reduce(function (sum, el) {
@@ -119,6 +121,7 @@ CommandPrompt.prototype.onKeypress = function (e) {
 
   /** go up commands history */
   if (e.key.name === 'up') {
+
     if (historyIndexes[context] > 0) {
       historyIndexes[context]--;
       rewrite(histories[context][historyIndexes[context]]);
@@ -147,7 +150,7 @@ CommandPrompt.prototype.onKeypress = function (e) {
             console.log(CommandPrompt.formatList(ac.matches));
             rewrite(line);
           }
-        } catch (e) {
+        } catch (err) {
           rewrite(line);
         }
       }
