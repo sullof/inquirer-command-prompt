@@ -12,6 +12,30 @@ let context
 
 class CommandPrompt extends InputPrompt {
 
+
+  initHistory(context) {
+    if (!histories[context]) {
+      histories[context] = []
+      historyIndexes[context] = 0
+    }
+  }
+
+  initAutoCompletion(context, autoCompletion) {
+    if (!autoCompleters[context]) {
+      if (autoCompletion) {
+        autoCompleters[context] = (l) => this.autoCompleter(l, autoCompletion)
+      } else {
+        autoCompleters[context] = () => []
+      }
+    }
+  }
+
+  addToHistory(context, value) {
+    this.initHistory(context)
+    histories[context].push(value)
+    historyIndexes[context]++
+  }
+
   onKeypress(e) {
 
     const rewrite = line => {
@@ -21,15 +45,8 @@ class CommandPrompt extends InputPrompt {
 
     context = this.opt.context ? this.opt.context : '_default'
 
-    if (!histories[context]) {
-      histories[context] = []
-      historyIndexes[context] = 0
-      if (this.opt.autoCompletion) {
-        autoCompleters[context] = (l) => this.autoCompleter(l, this.opt.autoCompletion)
-      } else {
-        autoCompleters[context] = () => []
-      }
-    }
+    this.initHistory(context)
+    this.initAutoCompletion(context, this.opt.autoCompletion)
 
     /** go up commands history */
     if (e.key.name === 'up') {
@@ -124,8 +141,7 @@ class CommandPrompt extends InputPrompt {
   run() {
     return new Promise(function (resolve) {
       this._run(function (value) {
-        histories[context].push(value)
-        historyIndexes[context]++
+        this.addToHistory(context, value)
         resolve(value)
       })
     }.bind(this))

@@ -63,6 +63,10 @@ The titles of the songs are actually hints, and are not necessary for the comman
 
 The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context` has to be an increasing integer starting from 0 (which is the default if no context is passed).
 
+## Requirements
+
+Starting with version v0.0.7, inquirer-command-prompt requires Node 6+.
+
 ## Credits
 Francesco Sullo
 
