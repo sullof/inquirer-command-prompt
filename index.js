@@ -76,7 +76,8 @@ class CommandPrompt extends InputPrompt {
           console.log()
           process.stdout.cursorTo(0)
           console.log(chalk.red('>> ') + chalk.grey('Available commands:'))
-          console.log(CommandPrompt.formatList(ac.matches))
+          console.log(CommandPrompt.formatList(
+              ac.matches.map(function (value) { return value.split(" ").slice(-1).join(); })))
           rewrite(line)
         }
       } catch (err) {
