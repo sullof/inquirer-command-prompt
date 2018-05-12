@@ -13,4 +13,3 @@ coverage
 /tmp
 /log
 yarn.lock
-package-lock.json
