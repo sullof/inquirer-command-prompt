@@ -9,10 +9,10 @@ function runPrompt() {
   const availableCommands = [
     {
       filter: function (str) {
-        return str.replace(/ .*$/, '')
+        return str.replace(/ \[.*$/, '')
       }
     },
-    'foo', 'boo', 'doo', 'quit', 'show [friend id]'
+    'foo a', 'foo b', 'foo ba mike', 'foo bb buck', 'foo bb jick', 'boo', 'fuu', 'quit', 'show john [first option]', 'show mike [second option]', "isb -b --aab-long -a optA", "isb -b --aab-long -a optB", "isb -b --aab-long -a optC"
   ]
 
   return inquirer.prompt([
@@ -26,11 +26,12 @@ function runPrompt() {
         return val
             ? true
             : 'Press TAB for suggestions'
-      }
+      },
+      short: true
     }
   ]).then(answers => {
     if (!~'foo,boo,doo,quit,show'.split(',').indexOf(answers.cmd)) {
-      console.log('Command not supported.')
+      console.log('Okedoke.')
     }
     if (answers.cmd !== 'quit') {
       return runPrompt()
