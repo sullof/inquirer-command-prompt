@@ -76,7 +76,11 @@ class CommandPrompt extends InputPrompt {
           console.log()
           process.stdout.cursorTo(0)
           console.log(chalk.red('>> ') + chalk.grey('Available commands:'))
-          console.log(CommandPrompt.formatList(ac.matches))
+          console.log(CommandPrompt.formatList(
+              this.opt.short
+                  ? this.short(line, ac.matches)
+                  : ac.matches
+          ))
           rewrite(line)
         }
       } catch (err) {
@@ -86,6 +90,24 @@ class CommandPrompt extends InputPrompt {
     this.render()
   }
 
+  short(l, m) {
+    if (l) {
+      l = l.replace(/ $/, '')
+      for (let i = 0; i < m.length; i++) {
+        if (m[i] == l) {
+          m.splice(i, 1)
+          i--
+        } else {
+          if (m[i][l.length] == ' ') {
+            m[i] = m[i].replace(RegExp(l + ' '), '')
+          } else {
+            m[i] = m[i].replace(RegExp(l.replace(/ [^ +]$/, '') + ' '), '')
+          }
+        }
+      }
+    }
+    return m
+  }
 
   autoCompleter(line, cmds) {
 
