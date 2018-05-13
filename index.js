@@ -101,7 +101,7 @@ class CommandPrompt extends InputPrompt {
           if (m[i][l.length] == ' ') {
             m[i] = m[i].replace(RegExp(l + ' '), '')
           } else {
-            m[i] = m[i].replace(RegExp(l.replace(/ [^ +]$/, '') + ' '), '')
+            m[i] = m[i].replace(RegExp(l.replace(/ [^ ]+$/, '') + ' '), '')
           }
         }
       }

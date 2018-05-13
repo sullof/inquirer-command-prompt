@@ -12,7 +12,7 @@ function runPrompt() {
         return str.replace(/ \[.*$/, '')
       }
     },
-    'foo a', 'foo b', 'foo ba mike', 'foo bb buck', 'foo bb jick', 'boo', 'fuu', 'quit', 'show john [first option]', 'show mike [second option]'
+    'foo a', 'foo b', 'foo ba mike', 'foo bb buck', 'foo bb jick', 'boo', 'fuu', 'quit', 'show john [first option]', 'show mike [second option]', "isb -b --aab-long -a optA", "isb -b --aab-long -a optB", "isb -b --aab-long -a optC"
   ]
 
   return inquirer.prompt([
