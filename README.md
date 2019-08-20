@@ -1,5 +1,5 @@
 # inquirer-command-prompt
-A prompt with history management and autocomplete
+A prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
 
 ## Installation
 
@@ -76,6 +76,29 @@ and you have already typed `foo` it shows just `ba` and `bb` in the suggestions,
 The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context` has to be an increasing integer starting from 0 (which is the default if no context is passed).
 
 Run the example in `examples/autocompletions.js` to see how the options work.
+
+##### saved history
+
+If you want to save the history and start back from there next time, since version 0.0.9, you can config a file for the history. You can also limit the number of file you like to have in the history (to avoid huge, illimitate histories).
+
+```javascript
+const inquirer = require('inquirer')
+const inquirerCommandPrompt = require('inquirer-command-prompt')
+const path = require('path')
+
+const historyFolder = path.join(homedir(), '.tgt')
+inquirerCommandPrompt.setConfig({
+  history: {
+    save: true,
+    folder: path.join(homedir(), '.tgt'),
+    limit: 10
+  }
+})
+
+inquirer.registerPrompt('command', inquirerCommandPrompt)
+
+```
+
 
 ## Requirements
 

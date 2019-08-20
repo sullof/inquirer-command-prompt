@@ -1,19 +1,36 @@
-const util = require('util')
 const chalk = require('chalk')
 const ellipsize = require('ellipsize')
+const fs = require('fs-extra')
+const path = require('path')
 
 const InputPrompt = require('inquirer/lib/prompts/input')
 
-const histories = {}
-const historyIndexes = {}
+let histories = {}
+let historyIndexes = {}
 const autoCompleters = {}
 
+let historyFile
 let context
+
+let globalConfig
 
 class CommandPrompt extends InputPrompt {
 
-
-  initHistory(context) {
+  static initHistory(context) {
+    if (!historyFile && globalConfig && globalConfig.history && globalConfig.history.save) {
+      const historyFolder = globalConfig.history.folder
+      fs.ensureDirSync(historyFolder)
+      historyFile = path.join(historyFolder, 'inquirer-command-prompt-history.json')
+      if (fs.existsSync(historyFile)) {
+        try {
+          const previousHistory = JSON.parse(fs.readFileSync(historyFile))
+          histories = previousHistory.histories
+          historyIndexes = previousHistory.historyIndexes
+        } catch (e) {
+          console.error('inquirer-command-promt ERROR: Invalid history file.')
+        }
+      }
+    }
     if (!histories[context]) {
       histories[context] = []
       historyIndexes[context] = 0
@@ -30,10 +47,30 @@ class CommandPrompt extends InputPrompt {
     }
   }
 
-  addToHistory(context, value) {
-    this.initHistory(context)
+  static saveHistory() {
+    fs.writeFileSync(historyFile,
+        JSON.stringify({
+          histories,
+          historyIndexes
+        }, null, 2)
+    )
+  }
+
+  static addToHistory(context, value) {
+    CommandPrompt.initHistory(context)
     histories[context].push(value)
     historyIndexes[context]++
+    if (globalConfig && globalConfig.history && globalConfig.history.limit) {
+      const len = histories[context].length
+      const limit = globalConfig.history.limit
+      if (len > limit) {
+        histories[context] = histories[context].slice(len - limit)
+        historyIndexes[context] = limit
+      }
+    }
+    if (historyFile) {
+      CommandPrompt.saveHistory()
+    }
   }
 
   onKeypress(e) {
@@ -45,7 +82,7 @@ class CommandPrompt extends InputPrompt {
 
     context = this.opt.context ? this.opt.context : '_default'
 
-    this.initHistory(context)
+    CommandPrompt.initHistory(context)
     this.initAutoCompletion(context, this.opt.autoCompletion)
 
     /** go up commands history */
@@ -78,7 +115,7 @@ class CommandPrompt extends InputPrompt {
           console.log(chalk.red('>> ') + chalk.grey('Available commands:'))
           console.log(CommandPrompt.formatList(
               this.opt.short
-                  ? this.short(line, ac.matches)
+                  ? CommandPrompt.short(line, ac.matches)
                   : ac.matches
           ))
           rewrite(line)
@@ -90,15 +127,15 @@ class CommandPrompt extends InputPrompt {
     this.render()
   }
 
-  short(l, m) {
+  static short(l, m) {
     if (l) {
       l = l.replace(/ $/, '')
       for (let i = 0; i < m.length; i++) {
-        if (m[i] == l) {
+        if (m[i] === l) {
           m.splice(i, 1)
           i--
         } else {
-          if (m[i][l.length] == ' ') {
+          if (m[i][l.length] === ' ') {
             m[i] = m[i].replace(RegExp(l + ' '), '')
           } else {
             m[i] = m[i].replace(RegExp(l.replace(/ [^ ]+$/, '') + ' '), '')
@@ -163,7 +200,7 @@ class CommandPrompt extends InputPrompt {
   run() {
     return new Promise(function (resolve) {
       this._run(function (value) {
-        this.addToHistory(context, value)
+        CommandPrompt.addToHistory(context, value)
         resolve(value)
       })
     }.bind(this))
@@ -202,6 +239,12 @@ CommandPrompt.setSpaces = (str, length, ellipsized) => {
   }
   const newStr = str + ' '.repeat(length - str.length)
   return newStr
+}
+
+CommandPrompt.setConfig = config => {
+  if (typeof config === 'object') {
+    globalConfig = config
+  }
 }
 
 
