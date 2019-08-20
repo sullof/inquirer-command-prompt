@@ -79,7 +79,9 @@ Run the example in `examples/autocompletions.js` to see how the options work.
 
 ##### saved history
 
-To save the history and start back from there, you can config a file for history. You can also limit the number of commands you like to have in history (to avoid huge, unlimited histories).
+To save the history and start back from there, you can config a file for history. 
+
+You can also limit the number of commands you like to have in history (to avoid huge, unlimited histories).
 
 ```javascript
 const inquirer = require('inquirer')
@@ -91,13 +93,24 @@ inquirerCommandPrompt.setConfig({
   history: {
     save: true,
     folder: path.join(homedir(), '.tgt'),
-    limit: 10
+    limit: 10,
+    blacklist: ['exit']
   }
 })
 
 inquirer.registerPrompt('command', inquirerCommandPrompt)
 
 ```
+
+Parameters:
+
+`save` explicitly asks to save the history
+
+`folder` is the folder where the history file will be saved
+
+`limit` is the limit of the saved history. This is not applied to the history in memory. 
+
+`blacklist` is a list of commands that we don't want to put in the saved history. For example an `exit`.
 
 
 ## Requirements
