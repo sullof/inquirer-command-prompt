@@ -1,6 +1,6 @@
 {
   "name": "inquirer-command-prompt",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc 'src/*.js' 'test/*.js'",

@@ -27,7 +27,7 @@ class CommandPrompt extends InputPrompt {
           const previousHistory = JSON.parse(fs.readFileSync(historyFile))
           histories = previousHistory.histories
           for (let c in histories) {
-            historyIndexes[c] = histories[c].length - 1
+            historyIndexes[c] = histories[c].length
           }
         } catch (e) {
           console.error('inquirer-command-promt ERROR: Invalid history file.')
