@@ -2,6 +2,7 @@ const chalk = require('chalk')
 const ellipsize = require('ellipsize')
 const fs = require('fs-extra')
 const path = require('path')
+const _ = require('lodash')
 
 const InputPrompt = require('inquirer/lib/prompts/input')
 
@@ -25,7 +26,9 @@ class CommandPrompt extends InputPrompt {
         try {
           const previousHistory = JSON.parse(fs.readFileSync(historyFile))
           histories = previousHistory.histories
-          historyIndexes = previousHistory.historyIndexes
+          for (let c in histories) {
+            historyIndexes[c] = histories[c].length - 1
+          }
         } catch (e) {
           console.error('inquirer-command-promt ERROR: Invalid history file.')
         }
@@ -47,29 +50,26 @@ class CommandPrompt extends InputPrompt {
     }
   }
 
-  static saveHistory() {
-    fs.writeFileSync(historyFile,
-        JSON.stringify({
-          histories,
-          historyIndexes
-        }, null, 2)
-    )
-  }
-
   static addToHistory(context, value) {
     CommandPrompt.initHistory(context)
     histories[context].push(value)
     historyIndexes[context]++
-    if (globalConfig && globalConfig.history && globalConfig.history.limit) {
-      const len = histories[context].length
-      const limit = globalConfig.history.limit
-      if (len > limit) {
-        histories[context] = histories[context].slice(len - limit)
-        historyIndexes[context] = limit
-      }
-    }
     if (historyFile) {
-      CommandPrompt.saveHistory()
+      const savedHistory = _.clone(histories)
+      const limit = globalConfig.history.limit
+      if (limit) {
+        for (let c in savedHistory) {
+          const len = savedHistory[c].length
+          if (len > limit) {
+            savedHistory[c] = savedHistory[c].slice(len - limit)
+          }
+        }
+      }
+      fs.writeFileSync(historyFile,
+          JSON.stringify({
+            histories: savedHistory
+          }, null, 2)
+      )
     }
   }
 
@@ -124,6 +124,7 @@ class CommandPrompt extends InputPrompt {
         rewrite(line)
       }
     }
+
     this.render()
   }
 
@@ -201,6 +202,7 @@ class CommandPrompt extends InputPrompt {
     return new Promise(function (resolve) {
       this._run(function (value) {
         CommandPrompt.addToHistory(context, value)
+        historyIndexes[context] = histories[context].length
         resolve(value)
       })
     }.bind(this))
