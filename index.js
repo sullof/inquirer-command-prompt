@@ -56,6 +56,9 @@ class CommandPrompt extends InputPrompt {
     historyIndexes[context]++
     if (historyFile) {
       const savedHistory = _.clone(histories)
+      if ((globalConfig.history.blacklist || []).includes(value)) {
+        savedHistory.pop()
+      }
       const limit = globalConfig.history.limit
       if (limit) {
         for (let c in savedHistory) {
