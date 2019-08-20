@@ -79,7 +79,7 @@ Run the example in `examples/autocompletions.js` to see how the options work.
 
 ##### saved history
 
-If you want to save the history and start back from there next time, since version 0.0.9, you can config a file for the history. You can also limit the number of file you like to have in the history (to avoid huge, illimitate histories).
+To save the history and start back from there, you can config a file for history. You can also limit the number of commands you like to have in history (to avoid huge, unlimited histories).
 
 ```javascript
 const inquirer = require('inquirer')
