@@ -101,6 +101,8 @@ class CommandPrompt extends InputPrompt {
       if (histories[context][historyIndexes[context] + 1]) {
         historyIndexes[context]++
         rewrite(histories[context][historyIndexes[context]])
+      } else {
+        rewrite('')
       }
     }
     /** search for command at an autoComplete option
