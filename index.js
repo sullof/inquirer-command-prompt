@@ -52,28 +52,35 @@ class CommandPrompt extends InputPrompt {
 
   static addToHistory(context, value) {
     CommandPrompt.initHistory(context)
-    histories[context].push(value)
-    historyIndexes[context]++
-    if (historyFile) {
-      const savedHistory = _.clone(histories)
-      const limit = globalConfig.history.limit
-      if (limit) {
-        for (let c in savedHistory) {
-          if ((globalConfig.history.blacklist || []).includes(value)) {
-            savedHistory[c].pop()
-          }
-          const len = savedHistory[c].length
-          if (len > limit) {
-            savedHistory[c] = savedHistory[c].slice(len - limit)
+    if (histories[context][histories[context].length - 1] !== value) {
+      histories[context].push(value)
+      historyIndexes[context]++
+      if (historyFile) {
+        const savedHistory = _.clone(histories)
+        const limit = globalConfig.history.limit
+        if (limit) {
+          for (let c in savedHistory) {
+            if ((globalConfig.history.blacklist || []).includes(value)) {
+              savedHistory[c].pop()
+            }
+            const len = savedHistory[c].length
+            if (len > limit) {
+              savedHistory[c] = savedHistory[c].slice(len - limit)
+            }
           }
         }
+        fs.writeFileSync(historyFile,
+            JSON.stringify({
+              histories: savedHistory
+            }, null, 2)
+        )
       }
-      fs.writeFileSync(historyFile,
-          JSON.stringify({
-            histories: savedHistory
-          }, null, 2)
-      )
     }
+  }
+
+  static formatIndex(i) {
+    let len = globalConfig.history.limit.toString().length
+    return ' '.repeat(len - `${i}`.length) + i
   }
 
   onKeypress(e) {
@@ -90,7 +97,6 @@ class CommandPrompt extends InputPrompt {
 
     /** go up commands history */
     if (e.key.name === 'up') {
-
       if (historyIndexes[context] > 0) {
         historyIndexes[context]--
         rewrite(histories[context][historyIndexes[context]])
@@ -128,8 +134,14 @@ class CommandPrompt extends InputPrompt {
       } catch (err) {
         rewrite(line)
       }
+    } else if (e.key.name === 'right' && e.key.shift) {
+      let history = histories[context]
+      console.log(chalk.bold('History'))
+      for (let i=0;i< history.length;i++) {
+        console.log(`${chalk.grey(CommandPrompt.formatIndex(i))}  ${history[i]}`)
+      }
+      rewrite('')
     }
-
     this.render()
   }
 
@@ -252,6 +264,13 @@ CommandPrompt.setConfig = config => {
   if (typeof config === 'object') {
     globalConfig = config
   }
+}
+
+CommandPrompt.getHistory = context => {
+  if (!context) {
+    context = '_default'
+  }
+  return histories[`${context}`]
 }
 
 
