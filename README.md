@@ -45,9 +45,9 @@ You can change the type `command` with whatever you like, the prompt is anonymou
 
 ##### autoCompletion
 
-It is optional. It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed. 
+It is optional. It can be an array or a function which returns an array accepting as a parameter the part of the command that's been already typed.
 
-The first element of the array can be an `options` object. Right now, the only implemented option is `filter`. Suppose that you want to edit something and the available commands are 
+The first element of the array can be an `options` object. Right now, the only implemented option is `filter`. Suppose that you want to edit something and the available commands are
 ```
 edit 12: Love is in the air
 edit 36: Like a virgin
@@ -55,7 +55,7 @@ edit 36: Like a virgin
 The titles of the songs are actually hints, and are not necessary for the command which is supposed to be only `edit 12`. So, you want that when the user presses TAB only `edit 12` is rendered. To obtain this, you can pass the following command list:
 ```
 [
-  { filter: str => str.split(':')[0] }, 
+  { filter: str => str.split(':')[0] },
   'edit 12: Love is in the air',
   'edit 36: Like a virgin'
 ]
@@ -79,7 +79,7 @@ Run the example in `examples/autocompletions.js` to see how the options work.
 
 ##### saved history
 
-To save the history and start back from there, you can config a file for history. 
+To save the history and start back from there, you can config a file for history.
 
 You can also limit the number of commands you like to have in history (to avoid huge, unlimited histories).
 
@@ -108,10 +108,16 @@ Parameters:
 
 `folder` is the folder where the history file will be saved
 
-`limit` is the limit of the saved history. This is not applied to the history in memory. 
+`limit` is the limit of the saved history. This is not applied to the history in memory.
 
 `blacklist` is a list of commands that we don't want to put in the saved history. For example an `exit`.
 
+
+##### retrieve the history
+
+To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
+
+From version `0.0.15', to see the entire history for the current context, you can type `Shift-arrowRight`.
 
 ## Requirements
 
