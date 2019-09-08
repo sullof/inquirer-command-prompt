@@ -40,10 +40,12 @@ class CommandPrompt extends InputPrompt {
     }
   }
 
-  initAutoCompletion(context, autoCompletion) {
+  async initAutoCompletion(context, autoCompletion) {
     if (!autoCompleters[context]) {
-      if (autoCompletion) {
-        autoCompleters[context] = (l) => this.autoCompleter(l, autoCompletion)
+      if (thiz.isAsyncFunc(autoCompletion)) {
+        autoCompleters[context] = async l => this.asyncAutoCompleter(l, autoCompletion)
+      } else if (autoCompletion) {
+        autoCompleters[context] = l => this.autoCompleter(l, autoCompletion)
       } else {
         autoCompleters[context] = () => []
       }
@@ -51,7 +53,7 @@ class CommandPrompt extends InputPrompt {
   }
 
   static addToHistory(context, value) {
-    CommandPrompt.initHistory(context)
+    thiz.initHistory(context)
     if (histories[context][histories[context].length - 1] !== value) {
       histories[context].push(value)
       historyIndexes[context]++
@@ -83,7 +85,7 @@ class CommandPrompt extends InputPrompt {
     return ' '.repeat(len - `${i}`.length) + i
   }
 
-  onKeypress(e) {
+  async onKeypress(e) {
 
     const rewrite = line => {
       this.rl.line = line
@@ -92,8 +94,8 @@ class CommandPrompt extends InputPrompt {
 
     context = this.opt.context ? this.opt.context : '_default'
 
-    CommandPrompt.initHistory(context)
-    this.initAutoCompletion(context, this.opt.autoCompletion)
+    thiz.initHistory(context)
+    await this.initAutoCompletion(context, this.opt.autoCompletion)
 
     /** go up commands history */
     if (e.key.name === 'up') {
@@ -117,28 +119,39 @@ class CommandPrompt extends InputPrompt {
     else if (e.key.name === 'tab') {
       let line = this.rl.line.replace(/^ +/, '').replace(/\t/, '').replace(/ +/g, ' ')
       try {
-        var ac = autoCompleters[context](line)
+        var ac
+        if (thiz.isAsyncFunc(this.opt.autoCompletion)) {
+          ac = await autoCompleters[context](line)
+        } else {
+          ac = autoCompleters[context](line)
+        }
         if (ac.match) {
           rewrite(ac.match)
         } else if (ac.matches) {
           console.log()
           process.stdout.cursorTo(0)
           console.log(chalk.red('>> ') + chalk.grey('Available commands:'))
-          console.log(CommandPrompt.formatList(
+          console.log(thiz.formatList(
               this.opt.short
-                  ? CommandPrompt.short(line, ac.matches)
+                  ? (
+                      typeof this.opt.short === 'function'
+                          ? this.opt.short(line, ac.matches)
+                          : thiz.short(line, ac.matches)
+                  )
                   : ac.matches
           ))
           rewrite(line)
         }
       } catch (err) {
+        console.error(err)
+
         rewrite(line)
       }
     } else if (e.key.name === 'right' && e.key.shift) {
       let history = histories[context]
       console.log(chalk.bold('History'))
-      for (let i=0;i< history.length;i++) {
-        console.log(`${chalk.grey(CommandPrompt.formatIndex(i))}  ${history[i]}`)
+      for (let i = 0; i < history.length; i++) {
+        console.log(`${chalk.grey(thiz.formatIndex(i))}  ${history[i]}`)
       }
       rewrite('')
     }
@@ -164,12 +177,28 @@ class CommandPrompt extends InputPrompt {
     return m
   }
 
-  autoCompleter(line, cmds) {
+  static isFunc(func) {
+    return typeof func === 'function'
+  }
 
-    let max = 0
+  static isAsyncFunc(func) {
+    return thiz.isFunc(func) && func.constructor.name === 'AsyncFunction'
+  }
+
+  async asyncAutoCompleter(line, cmds) {
+    cmds = await cmds(line)
+    return this.autoCompleterFormatter(line, cmds)
+  }
+
+  autoCompleter(line, cmds) {
     if (typeof cmds === 'function') {
       cmds = cmds(line)
     }
+    return this.autoCompleterFormatter(line, cmds)
+  }
+
+  autoCompleterFormatter(line, cmds) {
+    let max = 0
 
     // first element in cmds can be an object with special instructions
     let options = {
@@ -218,61 +247,61 @@ class CommandPrompt extends InputPrompt {
   run() {
     return new Promise(function (resolve) {
       this._run(function (value) {
-        CommandPrompt.addToHistory(context, value)
+        thiz.addToHistory(context, value)
         historyIndexes[context] = histories[context].length
         resolve(value)
       })
     }.bind(this))
   }
 
-}
-
-
-CommandPrompt.formatList = (elems, maxSize = 40, ellipsized) => {
-  const cols = process.stdout.columns
-  let max = 0
-  for (let elem of elems) {
-    max = Math.max(max, elem.length + 4)
+  static formatList(elems, maxSize = 40, ellipsized) {
+    const cols = process.stdout.columns
+    let max = 0
+    for (let elem of elems) {
+      max = Math.max(max, elem.length + 4)
+    }
+    if (ellipsized && max > maxSize) {
+      max = maxSize
+    }
+    let columns = (cols / max) | 0
+    let str = ''
+    let c = 1
+    for (let elem of elems) {
+      str += thiz.setSpaces(elem, max, ellipsized)
+      if (c === columns) {
+        str += ' '.repeat(cols - max * columns)
+        c = 1
+      } else {
+        c++
+      }
+    }
+    return str
   }
-  if (ellipsized && max > maxSize) {
-    max = maxSize
+
+  static setSpaces(str, len, ellipsized) {
+    if (ellipsized && str.length > len - 4) {
+      return ellipsize(str, len - 4) + ' '.repeat(4)
+    }
+    const newStr = str + ' '.repeat(len - str.length)
+    return newStr
   }
-  let columns = (cols / max) | 0
-  let str = ''
-  let c = 1
-  for (let elem of elems) {
-    str += CommandPrompt.setSpaces(elem, max, ellipsized)
-    if (c === columns) {
-      str += ' '.repeat(cols - max * columns)
-      c = 1
-    } else {
-      c++
+
+  static setConfig(config) {
+    if (typeof config === 'object') {
+      globalConfig = config
     }
   }
-  return str
-}
 
-CommandPrompt.setSpaces = (str, length, ellipsized) => {
-  if (ellipsized && str.length > length - 4) {
-    return ellipsize(str, length - 4) + ' '.repeat(4)
+  static getHistory(context) {
+    if (!context) {
+      context = '_default'
+    }
+    return histories[`${context}`]
   }
-  const newStr = str + ' '.repeat(length - str.length)
-  return newStr
+
 }
 
-CommandPrompt.setConfig = config => {
-  if (typeof config === 'object') {
-    globalConfig = config
-  }
-}
-
-CommandPrompt.getHistory = context => {
-  if (!context) {
-    context = '_default'
-  }
-  return histories[`${context}`]
-}
-
+let thiz = CommandPrompt
 
 module.exports = CommandPrompt
 

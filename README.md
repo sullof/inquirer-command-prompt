@@ -1,5 +1,6 @@
 # inquirer-command-prompt
-A prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
+
+A simple, but powerful prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
 
 ## Installation
 
@@ -10,9 +11,12 @@ npm install inquirer-command-prompt --save
 ## Usage
 
 ```javascript
-inquirer.registerPrompt('command', require('inquirer-command-prompt'))
+inquirer.registerPrompt(
+   'command',
+   require('inquirer-command-prompt')
+)
 ```
-You can change the type `command` with whatever you like, the prompt is anonymous.
+You can change the name `command` with whatever you like, the actual prompt is anonymous.
 
 ## Example
 
@@ -61,6 +65,10 @@ The titles of the songs are actually hints, and are not necessary for the comman
 ]
 ```
 
+##### asyncAutoCompletion
+
+If the completion array is returned by an async function, the `autoCompletion` option will fail. In this case, use `asyncAutoCompletion` the same way.
+
 ##### short
 
 The `short` option is optional and by default it is set to `false`. If set to `true` it cuts the suggestion leaving only the part that has not been already typed. For example, if there are the following command available
@@ -70,6 +78,13 @@ The `short` option is optional and by default it is set to `false`. If set to `t
 ```
 
 and you have already typed `foo` it shows just `ba` and `bb` in the suggestions, instead of `foo ba` and `foo bb`
+
+`short` separates by space. If you need to perform more complex operations, you can setup your own short function. For example, if you are building a file completion, you may want to show only the basename, instead than the full path. In this case you could set:
+```
+  short: (line, matches) {
+    return str.replace(/^.*\/([^/]+)$/, '$1')
+  },
+```
 
 ##### context
 
@@ -88,11 +103,12 @@ const inquirer = require('inquirer')
 const inquirerCommandPrompt = require('inquirer-command-prompt')
 const path = require('path')
 
-const historyFolder = path.join(homedir(), '.tgt')
+const historyFolder = path.join(homedir(), '.myApp')
+
 inquirerCommandPrompt.setConfig({
   history: {
     save: true,
-    folder: path.join(homedir(), '.tgt'),
+    folder: historyFolder,
     limit: 10,
     blacklist: ['exit']
   }
