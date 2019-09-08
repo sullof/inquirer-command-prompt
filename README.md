@@ -65,9 +65,28 @@ The titles of the songs are actually hints, and are not necessary for the comman
 ]
 ```
 
-##### asyncAutoCompletion
-
-If the completion array is returned by an async function, the `autoCompletion` option will fail. In this case, use `asyncAutoCompletion` the same way.
+For dynamic managements, the completion array can be returned by a function, for example:
+```javascript
+  return inquirer.prompt([
+      {
+        type: 'command',
+        name: 'cmd',
+        message: '>',
+        validate: val => true,
+        // optional
+        autoCompletion: line => {
+          if (/(\.|\/|~)/.test(line)) return someFileAutoCompletion(line)
+          else return ['ls', 'echo', 'find', 'cat', 'help']
+        },
+        context: 0,
+        short: false
+      }
+    ]).then(answers => {
+      return Promise.resolve(answers.cmd)
+    }).catch(err => {
+      console.error(err.stack)
+    })
+```
 
 ##### short
 
