@@ -156,7 +156,7 @@ To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
 
 ## Credits
-[Francesco Sullo](https://francesco.sullo.co) (<francesco@sullo.co>)
+[Francesco Sullo](https://francesco.sullo.co)
 
 ## License
 MIT
