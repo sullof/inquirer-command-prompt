@@ -107,7 +107,7 @@ and you have already typed `foo` it shows just `ba` and `bb` in the suggestions,
 
 ##### context
 
-The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context` has to be an increasing integer starting from 0 (which is the default if no context is passed).
+The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context`s have to be increasing integers starting from 0.
 
 Run the example in `examples/autocompletions.js` to see how the options work.
 
