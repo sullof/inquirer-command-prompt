@@ -1,5 +1,6 @@
 # inquirer-command-prompt
-A prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
+
+A simple, but powerful prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
 
 ## Installation
 
@@ -10,9 +11,12 @@ npm install inquirer-command-prompt --save
 ## Usage
 
 ```javascript
-inquirer.registerPrompt('command', require('inquirer-command-prompt'))
+inquirer.registerPrompt(
+   'command',
+   require('inquirer-command-prompt')
+)
 ```
-You can change the type `command` with whatever you like, the prompt is anonymous.
+You can change the name `command` with whatever you like, the actual prompt is anonymous.
 
 ## Example
 
@@ -61,6 +65,29 @@ The titles of the songs are actually hints, and are not necessary for the comman
 ]
 ```
 
+For dynamic managements, the completion array can be returned by a function, for example:
+```javascript
+  return inquirer.prompt([
+      {
+        type: 'command',
+        name: 'cmd',
+        message: '>',
+        validate: val => true,
+        // optional
+        autoCompletion: line => {
+          if (/(\.|\/|~)/.test(line)) return someFileAutoCompletion(line)
+          else return ['ls', 'echo', 'find', 'cat', 'help']
+        },
+        context: 0,
+        short: false
+      }
+    ]).then(answers => {
+      return Promise.resolve(answers.cmd)
+    }).catch(err => {
+      console.error(err.stack)
+    })
+```
+
 ##### short
 
 The `short` option is optional and by default it is set to `false`. If set to `true` it cuts the suggestion leaving only the part that has not been already typed. For example, if there are the following command available
@@ -71,11 +98,19 @@ The `short` option is optional and by default it is set to `false`. If set to `t
 
 and you have already typed `foo` it shows just `ba` and `bb` in the suggestions, instead of `foo ba` and `foo bb`
 
+`short` separates by space. If you need to perform more complex operations, you can customize the short function. For example, if you are building a file completion, you may want to show only the basename, instead than the full path. In this case you could set:
+```
+  short: (line, matches) {
+    return str.replace(/^.*\/([^/]+)$/, '$1')
+  },
+```
+There is an example in `examples/filecompletion.js`.
+
 ##### context
 
-The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context` has to be an increasing integer starting from 0 (which is the default if no context is passed).
+The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context`s have to be increasing integers starting from 0.
 
-Run the example in `examples/autocompletions.js` to see how the options work.
+Run the example in `examples/autocompletion.js` to see how the options work.
 
 ##### saved history
 
@@ -88,11 +123,12 @@ const inquirer = require('inquirer')
 const inquirerCommandPrompt = require('inquirer-command-prompt')
 const path = require('path')
 
-const historyFolder = path.join(homedir(), '.tgt')
+const historyFolder = path.join(homedir(), '.myApp')
+
 inquirerCommandPrompt.setConfig({
   history: {
     save: true,
-    folder: path.join(homedir(), '.tgt'),
+    folder: historyFolder,
     limit: 10,
     blacklist: ['exit']
   }
@@ -117,14 +153,10 @@ Parameters:
 
 To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 
-From version `0.0.15', to see the entire history for the current context, you can type `Shift-arrowRight`.
-
-## Requirements
-
-Starting with version v0.0.7, inquirer-command-prompt requires Node 6+.
+From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
 
 ## Credits
-Francesco Sullo
+[Francesco Sullo](https://francesco.sullo.co)
 
 ## License
 MIT
