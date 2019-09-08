@@ -104,12 +104,13 @@ and you have already typed `foo` it shows just `ba` and `bb` in the suggestions,
     return str.replace(/^.*\/([^/]+)$/, '$1')
   },
 ```
+There is an example in `examples/filecompletion.js`.
 
 ##### context
 
 The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context`s have to be increasing integers starting from 0.
 
-Run the example in `examples/autocompletions.js` to see how the options work.
+Run the example in `examples/autocompletion.js` to see how the options work.
 
 ##### saved history
 
