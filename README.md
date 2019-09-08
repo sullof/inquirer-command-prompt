@@ -98,7 +98,7 @@ The `short` option is optional and by default it is set to `false`. If set to `t
 
 and you have already typed `foo` it shows just `ba` and `bb` in the suggestions, instead of `foo ba` and `foo bb`
 
-`short` separates by space. If you need to perform more complex operations, you can setup your own short function. For example, if you are building a file completion, you may want to show only the basename, instead than the full path. In this case you could set:
+`short` separates by space. If you need to perform more complex operations, you can customize the short function. For example, if you are building a file completion, you may want to show only the basename, instead than the full path. In this case you could set:
 ```
   short: (line, matches) {
     return str.replace(/^.*\/([^/]+)$/, '$1')
