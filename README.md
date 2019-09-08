@@ -153,7 +153,7 @@ Parameters:
 
 To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 
-From version `0.0.15', to see the entire history for the current context, you can type `Shift-arrowRight`.
+From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
 
 ## Requirements
 
