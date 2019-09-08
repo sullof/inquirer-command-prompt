@@ -155,12 +155,8 @@ To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 
 From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
 
-## Requirements
-
-Starting with version v0.0.7, inquirer-command-prompt requires Node 6+.
-
 ## Credits
-Francesco Sullo
+[Francesco Sullo](https://francesco.sullo.co) <francesco@sullo.co>
 
 ## License
 MIT
