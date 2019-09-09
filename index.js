@@ -299,6 +299,28 @@ class CommandPrompt extends InputPrompt {
     return histories[`${context}`]
   }
 
+  render(error) {
+    let bottomContent = ''
+    let appendContent = ''
+    let message = this.getQuestion()
+    let transformer = this.opt.transformer
+    let isFinal = this.status === 'answered'
+    if (isFinal) {
+      appendContent = this.answer
+    } else {
+      appendContent = this.rl.line
+    }
+    if (transformer) {
+      message += transformer(appendContent, this.answers, { isFinal })
+    } else {
+      message += isFinal && !this.opt.noColorOnAnswered ? chalk.cyan(appendContent) : appendContent
+    }
+    if (error) {
+      bottomContent = chalk.red('>> ') + error
+    }
+    this.screen.render(message, bottomContent)
+  }
+
 }
 
 let thiz = CommandPrompt

@@ -149,6 +149,12 @@ Parameters:
 `blacklist` is a list of commands that we don't want to put in the saved history. For example an `exit`.
 
 
+##### noColorOnAnswered
+
+I hate the change of color when a question is answered :-)  
+If you set this option, the color remains the default one.
+
+
 ##### retrieve the history
 
 To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
