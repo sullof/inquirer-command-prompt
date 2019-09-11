@@ -1,5 +1,4 @@
 const chalk = require('chalk')
-const ellipsize = require('ellipsize')
 const fs = require('fs-extra')
 const path = require('path')
 const _ = require('lodash')
@@ -138,7 +137,9 @@ class CommandPrompt extends InputPrompt {
                           ? this.opt.short(line, ac.matches)
                           : thiz.short(line, ac.matches)
                   )
-                  : ac.matches
+                  : ac.matches,
+              this.opt.maxSize,
+              this.opt.ellipsize
           ))
           rewrite(line)
         }
@@ -254,8 +255,11 @@ class CommandPrompt extends InputPrompt {
     }.bind(this))
   }
 
-  static formatList(elems, maxSize = 40, ellipsized) {
+  static formatList(elems, maxSize = 32, ellipsized) {
     const cols = process.stdout.columns
+    let ratio = Math.floor((cols - 1) / maxSize)
+    let remainder = (cols - 1) % maxSize
+    maxSize += Math.floor(remainder / ratio)
     let max = 0
     for (let elem of elems) {
       max = Math.max(max, elem.length + 4)
@@ -278,12 +282,17 @@ class CommandPrompt extends InputPrompt {
     return str
   }
 
+  static ellipsize(str, len) {
+    if (str.length > len) {
+      return str.substring(0, len - 2) + '…'
+    }
+  }
+
   static setSpaces(str, len, ellipsized) {
     if (ellipsized && str.length > len - 4) {
-      return ellipsize(str, len - 4) + ' '.repeat(4)
+      str = thiz.ellipsize(str, len - 4)
     }
-    const newStr = str + ' '.repeat(len - str.length)
-    return newStr
+    return str + ' '.repeat(len - str.length)
   }
 
   static setConfig(config) {
