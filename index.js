@@ -338,7 +338,7 @@ class CommandPrompt extends InputPrompt {
   }
 
   close() {
-    if (this.opt.onClose) {
+    if (typeof this.opt.onClose === 'function') {
       this.opt.onClose()
     }
   }
