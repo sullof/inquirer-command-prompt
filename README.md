@@ -112,6 +112,19 @@ The context is important for the history. If you program is handling a specific 
 
 Run the example in `examples/autocompletion.js` to see how the options work.
 
+
+##### ellipsis
+
+When the result of the autocomplete is returned, it is formatted in column. It is possible to add more options to customize the result:
+
+`ellipsized` tells the prompt to ellipsize the suggestions if they are too long
+
+`ellipsis` is a special character we like to use instead than the typical ellipsis.
+
+`maxSize` is the max size of the column. It is applied only if `ellipsized` is true. However, if there is space enough, the formatting is optimized to use that space even if it is larger than `maxSize`.
+
+       
+
 ##### saved history
 
 To save the history and start back from there, you can config a file for history.
