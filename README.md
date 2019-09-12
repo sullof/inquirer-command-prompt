@@ -123,7 +123,9 @@ When the result of the autocomplete is returned, it is formatted in column. It i
 
 `maxSize` is the max size of the column. It is applied only if `ellipsized` is true. However, if there is space enough, the formatting is optimized to use that space even if it is larger than `maxSize`.
 
-       
+##### onClose
+
+It is a function that will be executed if the user presses Ctrl-c.       
 
 ##### saved history
 

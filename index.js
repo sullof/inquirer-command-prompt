@@ -337,6 +337,12 @@ class CommandPrompt extends InputPrompt {
     this.screen.render(message, bottomContent)
   }
 
+  close() {
+    if (this.opt.onClose) {
+      this.opt.onClose()
+    }
+  }
+
 }
 
 let thiz = CommandPrompt
