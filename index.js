@@ -13,6 +13,7 @@ let historyFile
 let context
 
 let globalConfig
+const ELLIPSIS = '…'
 
 class CommandPrompt extends InputPrompt {
 
@@ -139,7 +140,8 @@ class CommandPrompt extends InputPrompt {
                   )
                   : ac.matches,
               this.opt.maxSize,
-              this.opt.ellipsize
+              this.opt.ellipsize,
+              this.opt.ellipsis
           ))
           rewrite(line)
         }
@@ -255,7 +257,7 @@ class CommandPrompt extends InputPrompt {
     }.bind(this))
   }
 
-  static formatList(elems, maxSize = 32, ellipsized) {
+  static formatList(elems, maxSize = 32, ellipsized, ellipsis) {
     const cols = process.stdout.columns
     let ratio = Math.floor((cols - 1) / maxSize)
     let remainder = (cols - 1) % maxSize
@@ -271,7 +273,7 @@ class CommandPrompt extends InputPrompt {
     let str = ''
     let c = 1
     for (let elem of elems) {
-      str += thiz.setSpaces(elem, max, ellipsized)
+      str += thiz.setSpaces(elem, max, ellipsized, ellipsis)
       if (c === columns) {
         str += ' '.repeat(cols - max * columns)
         c = 1
@@ -282,17 +284,22 @@ class CommandPrompt extends InputPrompt {
     return str
   }
 
-  static ellipsize(str, len) {
+  static setSpaces(str, len, ellipsized, ellipsis) {
+    if (ellipsized && str.length > len - 1) {
+      str = thiz.ellipsize(str, len - 1, ellipsis)
+    }
+    return str + ' '.repeat(len - thiz.decolorize(str).length)
+  }
+
+  static ellipsize(str, len, ellipsis = ELLIPSIS) {
     if (str.length > len) {
-      return str.substring(0, len - 2) + '…'
+      let l = thiz.decolorize(ellipsis).length + 1
+      return str.substring(0, len - l) + ellipsis
     }
   }
 
-  static setSpaces(str, len, ellipsized) {
-    if (ellipsized && str.length > len - 4) {
-      str = thiz.ellipsize(str, len - 4)
-    }
-    return str + ' '.repeat(len - str.length)
+  static decolorize(str) {
+    return str.replace(/\x1b\[[0-9;]*m/g, '')
   }
 
   static setConfig(config) {
@@ -320,7 +327,7 @@ class CommandPrompt extends InputPrompt {
       appendContent = this.rl.line
     }
     if (transformer) {
-      message += transformer(appendContent, this.answers, { isFinal })
+      message += transformer(appendContent, this.answers, {isFinal})
     } else {
       message += isFinal && !this.opt.noColorOnAnswered ? chalk.cyan(appendContent) : appendContent
     }
