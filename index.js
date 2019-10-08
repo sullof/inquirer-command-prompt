@@ -126,7 +126,16 @@ class CommandPrompt extends InputPrompt {
           ac = autoCompleters[context](line)
         }
         if (ac.match) {
-          rewrite(ac.match)
+          if (ac.match === line) {
+            rewrite(ac.match)
+          } else {
+            const lineItems = line.split(' ')
+            lineItems.pop()
+            rewrite([
+              ...lineItems,
+              ac.match
+            ].join(' '))
+          }
         } else if (ac.matches) {
           console.log()
           process.stdout.cursorTo(0)
@@ -215,8 +224,9 @@ class CommandPrompt extends InputPrompt {
       cmds = cmds.slice(1)
     }
 
+    const lastWord = line.split(' ').pop()
     cmds = cmds.reduce((sum, el) => {
-      RegExp(`^${line}`).test(el) && sum.push(el) && (max = Math.max(max, el.length))
+      RegExp(`^${lastWord}`).test(el) && sum.push(el) && (max = Math.max(max, el.length))
       return sum
     }, [])
 
