@@ -130,7 +130,7 @@ class CommandPrompt extends InputPrompt {
         } else if (ac.matches) {
           console.log()
           process.stdout.cursorTo(0)
-          console.log(chalk.red('>> ') + chalk.grey('Available commands:'))
+          console.log(this.opt.autocompletePrompt || chalk.red('>> ') + chalk.grey('Available commands:'))
           console.log(thiz.formatList(
               this.opt.short
                   ? (

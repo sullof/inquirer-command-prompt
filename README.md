@@ -125,7 +125,7 @@ When the result of the autocomplete is returned, it is formatted in column. It i
 
 ##### onClose
 
-It is a function that will be executed if the user presses Ctrl-c.       
+It is a function that will be executed if the user presses Ctrl-c.
 
 ##### saved history
 
@@ -168,6 +168,11 @@ Parameters:
 
 I hate the change of color when a question is answered :-)  
 If you set this option, the color remains the default one.
+
+
+##### autocompletePrompt
+
+By default, the message to show the available commands is `>> Available commands:`. You can change it with this option.
 
 
 ##### retrieve the history
