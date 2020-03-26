@@ -1,6 +1,6 @@
 {
   "name": "inquirer-command-prompt",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc 'src/*.js' 'test/*.js'",
@@ -23,18 +23,18 @@
   },
   "homepage": "https://github.com/sullof/inquirer-command-prompt#readme",
   "dependencies": {
-    "bluebird": "^3.5.5",
+    "bluebird": "^3.7.2",
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
-    "inquirer": "^6.5.1",
+    "inquirer": "^6.5.2",
     "lodash": "^4.17.15",
     "preferences": "^1.0.2"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.2",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
-    "eslint": "^6.2.1",
-    "mocha": "^6.2.0",
-    "sinon": "^7.4.1"
+    "eslint": "^6.8.0",
+    "mocha": "^6.2.3",
+    "sinon": "^7.5.0"
   }
 }
