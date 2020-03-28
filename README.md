@@ -153,6 +153,41 @@ inquirer.registerPrompt('command', inquirerCommandPrompt)
 
 ```
 
+If you want to save an encrypted history, you can do it setting like in the following example:
+
+```javascript
+const inquirer = require('inquirer')
+const inquirerCommandPrompt = require('inquirer-command-prompt')
+const path = require('path')
+
+const historyFolder = path.join(homedir(), '.myApp')
+
+inquirerCommandPrompt.setConfig({
+  history: {
+    save: false,
+    limit: 10,
+    blacklist: ['exit']
+  }
+})
+
+inquirer.registerPrompt('command', inquirerCommandPrompt)
+
+```
+
+and in your code do the initial setting loading the encrypted histories and passing them to the prompt with a command like:
+```
+let encryptedHistory = await fs.readFile(historyPath, 'utf8')
+previousHistories = JSON.parse(decryptHistory(encryptedHistory))
+inquirerCommandPrompt.setHistoryFromPreviousSavedHistories(previousHistories)
+```
+
+Instead, to save the encryptedHistories, you can do something like:
+```
+let histories = JSON.stringify(inquirerCommandPrompt.getHistories(true))
+let encryptedHistory = encryptHistory(histories)
+await fs.writeFile(historyPath, encryptedHistory)
+```
+
 Parameters:
 
 `save` explicitly asks to save the history
@@ -169,13 +204,17 @@ Parameters:
 I hate the change of color when a question is answered :-)  
 If you set this option, the color remains the default one.
 
+##### colorOnAnswered
+
+If you like to change of color when a question is answered, here you can choose the chalk color.
+
 
 ##### autocompletePrompt
 
 By default, the message to show the available commands is `>> Available commands:`. You can change it with this option.
 
 
-##### retrieve the history
+##### look at the history
 
 To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 

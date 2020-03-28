@@ -23,20 +23,24 @@ class CommandPrompt extends InputPrompt {
       fs.ensureDirSync(historyFolder)
       historyFile = path.join(historyFolder, 'inquirer-command-prompt-history.json')
       if (fs.existsSync(historyFile)) {
-        try {
-          const previousHistory = JSON.parse(fs.readFileSync(historyFile))
-          histories = previousHistory.histories
-          for (let c in histories) {
-            historyIndexes[c] = histories[c].length
-          }
-        } catch (e) {
-          console.error('inquirer-command-promt ERROR: Invalid history file.')
-        }
+        const previousHistories = JSON.parse(fs.readFileSync(historyFile))
+        CommandPrompt.setHistoryFromPreviousSavedHistories(previousHistories)
       }
     }
     if (!histories[context]) {
       histories[context] = []
       historyIndexes[context] = 0
+    }
+  }
+
+  static setHistoryFromPreviousSavedHistories(previousHistory) {
+    try {
+      histories = previousHistory.histories
+      for (let c in histories) {
+        historyIndexes[c] = histories[c].length
+      }
+    } catch (e) {
+      console.error('inquirer-command-promt ERROR: Invalid history file.')
     }
   }
 
@@ -55,22 +59,13 @@ class CommandPrompt extends InputPrompt {
   static addToHistory(context, value) {
     thiz.initHistory(context)
     if (histories[context][histories[context].length - 1] !== value) {
+      if (globalConfig && globalConfig.history && (globalConfig.history.blacklist || []).includes(value)) {
+        return
+      }
       histories[context].push(value)
       historyIndexes[context]++
       if (historyFile) {
-        const savedHistory = _.clone(histories)
-        const limit = globalConfig.history.limit
-        if (limit) {
-          for (let c in savedHistory) {
-            if ((globalConfig.history.blacklist || []).includes(value)) {
-              savedHistory[c].pop()
-            }
-            const len = savedHistory[c].length
-            if (len > limit) {
-              savedHistory[c] = savedHistory[c].slice(len - limit)
-            }
-          }
-        }
+        const savedHistory = CommandPrompt.getLimitedHistories(histories)
         fs.writeFileSync(historyFile,
             JSON.stringify({
               histories: savedHistory
@@ -78,6 +73,20 @@ class CommandPrompt extends InputPrompt {
         )
       }
     }
+  }
+
+  static getLimitedHistories() {
+    const limitedHistories = _.clone(histories)
+    const limit = globalConfig.history.limit
+    if (limit) {
+      for (let c in limitedHistories) {
+        const len = limitedHistories[c].length
+        if (len > limit) {
+          limitedHistories[c] = limitedHistories[c].slice(len - limit)
+        }
+      }
+    }
+    return limitedHistories
   }
 
   static formatIndex(i) {
@@ -315,6 +324,12 @@ class CommandPrompt extends InputPrompt {
     return histories[`${context}`]
   }
 
+  static getHistories(useLimit) {
+    return {
+      histories: useLimit ? CommandPrompt.getLimitedHistories() : histories
+    }
+  }
+
   render(error) {
     let bottomContent = ''
     let appendContent = ''
@@ -329,7 +344,7 @@ class CommandPrompt extends InputPrompt {
     if (transformer) {
       message += transformer(appendContent, this.answers, {isFinal})
     } else {
-      message += isFinal && !this.opt.noColorOnAnswered ? chalk.cyan(appendContent) : appendContent
+      message += isFinal && !this.opt.noColorOnAnswered ? chalk[this.opt.colorOnAnswered || 'cyan'](appendContent) : appendContent
     }
     if (error) {
       bottomContent = chalk.red('>> ') + error
