@@ -125,7 +125,7 @@ class CommandPrompt extends InputPrompt {
     /** search for command at an autoComplete option
      * which can be an array or a function which returns an array
      * */
-    else if (e.key.name === 'tab') {
+    if (e.key.name === 'tab') {
       let line = this.rl.line.replace(/^ +/, '').replace(/\t/, '').replace(/ +/g, ' ')
       try {
         var ac
@@ -160,12 +160,30 @@ class CommandPrompt extends InputPrompt {
         rewrite(line)
       }
     } else if (e.key.name === 'right' && e.key.shift) {
-      let history = histories[context]
-      console.log(chalk.bold('History'))
-      for (let i = 0; i < history.length; i++) {
-        console.log(`${chalk.grey(thiz.formatIndex(i))}  ${history[i]}`)
+      if (e.key.ctrl) {
+        let i = parseInt(this.rl.line)
+        if (!isNaN(i)) {
+          let history = histories[context]
+          rewrite(history[i])
+        } else {
+          rewrite('')
+        }
+      } else {
+        // shows the history
+        let history = histories[context]
+        console.log(chalk.bold('History'))
+        for (let i = 0; i < history.length; i++) {
+          console.log(`${chalk.grey(thiz.formatIndex(i))}  ${history[i]}`)
+        }
+        rewrite('')
       }
-      rewrite('')
+    } else if (e.key.name === 'end' && e.key.ctrl) {
+      // execute onCtrlEnd if defined
+      if (globalConfig && typeof globalConfig.onCtrlEnd === 'function') {
+        rewrite(globalConfig.onCtrlEnd(this.rl.line))
+      } else {
+        rewrite('')
+      }
     }
     this.render()
   }

@@ -198,6 +198,8 @@ Parameters:
 
 `blacklist` is a list of commands that we don't want to put in the saved history. For example an `exit`.
 
+`onCtrlEnd` is a function that is executed on the current line if pressing `Ctrl-End`. On Mac, you can obtain `End` pressing `Fn-arrowRight`. So, the entire combination becomes `Ctrl-Fn-arrowRight`.
+
 
 ##### noColorOnAnswered
 
@@ -219,6 +221,9 @@ By default, the message to show the available commands is `>> Available commands
 To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 
 From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
+
+From version `0.0.26`, to get an line in the history, type the relative index and press `Ctrl-Shift-arrowRight`
+
 
 ## Credits
 [Francesco Sullo](https://francesco.sullo.co)
