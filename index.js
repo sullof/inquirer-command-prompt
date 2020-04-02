@@ -243,7 +243,8 @@ class CommandPrompt extends InputPrompt {
     }
 
     cmds = cmds.reduce((sum, el) => {
-      RegExp(`^${line}`).test(el) && sum.push(el) && (max = Math.max(max, el.length))
+      let sanitizedLine = line.replace(/[\\\.\+\*\?\^\$\[\]\(\)\{\}\/\'\#\:\!\=\|]/ig, "\\$&")
+      RegExp(`^${sanitizedLine}`).test(el) && sum.push(el) && (max = Math.max(max, el.length))
       return sum
     }, [])
 
