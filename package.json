@@ -27,7 +27,7 @@
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
     "inquirer": "^6.5.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "preferences": "^1.0.2"
   },
   "devDependencies": {
