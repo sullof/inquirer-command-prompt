@@ -127,6 +127,10 @@ When the result of the autocomplete is returned, it is formatted in column. It i
 
 It is a function that will be executed if the user presses Ctrl-c.
 
+##### onBeforeKeyPress
+
+Sometimes, you need to do something when a key is pressed. Whatever you put in this function will be executed before the standard onKeyPress function.
+
 ##### saved history
 
 To save the history and start back from there, you can config a file for history.
