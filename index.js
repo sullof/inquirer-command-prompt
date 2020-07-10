@@ -96,6 +96,10 @@ class CommandPrompt extends InputPrompt {
 
   async onKeypress(e) {
 
+    if (this.opt.onBeforeKeyPress) {
+      this.opt.onBeforeKeyPress(e)
+    }
+
     const rewrite = line => {
       this.rl.line = line
       this.rl.write(null, {ctrl: true, name: 'e'})
@@ -247,7 +251,6 @@ class CommandPrompt extends InputPrompt {
       RegExp(`^${sanitizedLine}`).test(el) && sum.push(el) && (max = Math.max(max, el.length))
       return sum
     }, [])
-
     if (cmds.length > 1) {
       let commonStr = ''
       LOOP: for (let i = line.length; i < max; i++) {
