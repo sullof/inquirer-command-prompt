@@ -14,6 +14,7 @@ let context
 
 let globalConfig
 const ELLIPSIS = '…'
+let rl
 
 class CommandPrompt extends InputPrompt {
 
@@ -339,6 +340,10 @@ class CommandPrompt extends InputPrompt {
     }
   }
 
+  static getRl() {
+    return rl
+  }
+
   static getHistory(context) {
     if (!context) {
       context = '_default'
@@ -353,6 +358,7 @@ class CommandPrompt extends InputPrompt {
   }
 
   render(error) {
+    rl = this.rl
     let bottomContent = ''
     let appendContent = ''
     let message = this.getQuestion()
