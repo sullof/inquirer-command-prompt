@@ -131,6 +131,10 @@ It is a function that will be executed if the user presses Ctrl-c.
 
 Sometimes, you need to do something when a key is pressed. Whatever you put in this function will be executed before the standard onKeyPress function.
 
+##### onBeforeRewrite
+
+Sometimes, after an autocomplete, you must perform some change on the line to be rewritten. This function allow you to do that.
+
 ##### saved history
 
 To save the history and start back from there, you can config a file for history.
