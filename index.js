@@ -102,10 +102,8 @@ class CommandPrompt extends InputPrompt {
     }
 
     const rewrite = line => {
-      console.log(chalk.green(line))
       if (this.opt.onBeforeRewrite) {
         line = this.opt.onBeforeRewrite(line)
-        console.log(chalk.green(line))
       }
       this.rl.line = line
       this.rl.write(null, {ctrl: true, name: 'e'})
