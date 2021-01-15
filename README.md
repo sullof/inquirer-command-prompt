@@ -232,6 +232,11 @@ From version `0.0.15`, to see the entire history for the current context, you ca
 
 From version `0.0.26`, to get an line in the history, type the relative index and press `Ctrl-Shift-arrowRight`
 
+## History
+
+__0.1.0__
+* updating to InquirerJS 7
+
 
 ## Credits
 [Francesco Sullo](https://francesco.sullo.co)

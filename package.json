@@ -1,6 +1,6 @@
 {
   "name": "inquirer-command-prompt",
-  "version": "0.0.32",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "lint": "eslint -c .eslintrc 'src/*.js' 'test/*.js'",
@@ -25,7 +25,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
-    "inquirer": "^6.5.2",
+    "inquirer": "^7.3.3",
     "lodash": "^4.17.19"
   },
   "devDependencies": {
