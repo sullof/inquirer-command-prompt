@@ -1,6 +1,6 @@
 # inquirer-command-prompt
 
-A simple, but powerful prompt with history management and autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
+A simple, but powerful prompt with history management and dynamic autocomplete for [Inquirer](https://github.com/SBoudrias/Inquirer.js)
 
 ## Installation
 
@@ -34,8 +34,7 @@ You can change the name `command` with whatever you like, the actual prompt is a
         },
         // optional
         autoCompletion: ['ls', 'echo', 'find', 'cat', 'help'],
-        context: 0,
-        short: false
+        context: 0
       }
     ]).then(answers => {
       return Promise.resolve(answers.cmd)
@@ -79,7 +78,7 @@ For dynamic managements, the completion array can be returned by a function, for
           else return ['ls', 'echo', 'find', 'cat', 'help']
         },
         context: 0,
-        short: false
+        short: true
       }
     ]).then(answers => {
       return Promise.resolve(answers.cmd)
@@ -108,7 +107,7 @@ There is an example in `examples/filecompletion.js`.
 
 ##### context
 
-The context is important for the history. If you program is handling a specific process you want to have an history of the commands available in that specific context. The `context`s have to be increasing integers starting from 0.
+The context is important for the history. If your program is handling a specific process you want to have an history of the commands available in that specific context. The `context`s have to be increasing integers starting from 0.
 
 Run the example in `examples/autocompletion.js` to see how the options work.
 
@@ -161,7 +160,7 @@ inquirer.registerPrompt('command', inquirerCommandPrompt)
 
 ```
 
-If you want to save an encrypted history, you can do it setting like in the following example:
+If you want to save an encrypted history, you can do it setting it like in the following example:
 
 ```javascript
 const inquirer = require('inquirer')
@@ -183,14 +182,14 @@ inquirer.registerPrompt('command', inquirerCommandPrompt)
 ```
 
 and in your code do the initial setting loading the encrypted histories and passing them to the prompt with a command like:
-```
+```javascript
 let encryptedHistory = await fs.readFile(historyPath, 'utf8')
 previousHistories = JSON.parse(decryptHistory(encryptedHistory))
 inquirerCommandPrompt.setHistoryFromPreviousSavedHistories(previousHistories)
 ```
 
 Instead, to save the encryptedHistories, you can do something like:
-```
+```javascript
 let histories = JSON.stringify(inquirerCommandPrompt.getHistories(true))
 let encryptedHistory = encryptHistory(histories)
 await fs.writeFile(historyPath, encryptedHistory)
@@ -216,7 +215,7 @@ If you set this option, the color remains the default one.
 
 ##### colorOnAnswered
 
-If you like to change of color when a question is answered, here you can choose the chalk color.
+If you like to have a specific color when a question is answered, here you can choose the chalk color.
 
 
 ##### autocompletePrompt
@@ -230,12 +229,17 @@ To navigate the history, as usual, just type `arrowUp` and `arrowDown`.
 
 From version `0.0.15`, to see the entire history for the current context, you can type `Shift-arrowRight`.
 
-From version `0.0.26`, to get an line in the history, type the relative index and press `Ctrl-Shift-arrowRight`
+From version `0.0.26`, to get a line in the history, type the relative index's number and press `Ctrl-Shift-arrowRight`
 
 ## History
 
 __0.1.0__
 * updating to InquirerJS 7
+
+## Todo
+
+* Add more info in the history, taking it from the commits
+* Generalize the command to make it more usable in a general case (this prompt has been created and improved because I needed it for [Secrez](https://github.com/secrez/secrez)) 
 
 
 ## Credits
